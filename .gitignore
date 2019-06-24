@@ -1,0 +1,6 @@
+main/*.csv
+*.csv
+main/Ideas.txt
+Ideas.txt
+main/__pycache__
+__pycache__
