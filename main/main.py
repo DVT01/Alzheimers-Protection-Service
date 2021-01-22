@@ -77,7 +77,7 @@ def remove(user, user_password):
     answer = input()
 
     if answer in ('n', 'no'):
-        functionalities.MainMenu()
+        functionalities.main_menu()
 
     while True:
         subprocess.call('cls', shell=True)

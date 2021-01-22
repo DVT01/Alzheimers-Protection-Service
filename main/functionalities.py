@@ -48,7 +48,7 @@ def on_startup(user='Guest', user_password=None):
     connection = sqlite3.connect(database)
     cursor = connection.cursor()
     cursor.execute('CREATE TABLE IF NOT EXISTS accounts(domain TEXT, username TEXT, email TEXT, password TEXT, user TEXT)')
-    MainMenu()
+    main_menu()
 
 
 @outer_record
@@ -71,24 +71,20 @@ def add_account():
     print('Account Domain')
     account_name = input()
 
-    print(f'\nUsername of the {account_name} account.')
+    print(f'\nUsername of {account_name} account.')
     account_username = input()
 
     while True:
-        print(f'''
-Email of the {account_username} account.
-If you don't have an email then type none''')
+        print(f'Email of {account_name} account.')
         account_email = input()
 
-        if account_email.lower() == 'none':
+        if account_email == str():
             account_email = 'No Email'
             break
         elif not valid_email(account_email):
             subprocess.call('cls', shell=True)
             print(f'{account_email} is not a valid email!')
-            system('pause >nul 2>&1')
 
-            subprocess.call('cls', shell=True)
             print('Do you want to leave it as None?')
             answer = input()
 
@@ -101,15 +97,13 @@ If you don't have an email then type none''')
             break
 
     while True:
-        print(f'\nThe password of the {account_username} account.')
+        print(f'\nThe password of {account_name} account.')
         account_password0 = getpass('As you type the password, it will not be seen:')
         account_password1 = getpass('\nPlease re-type password:')
 
         if account_password0 != account_password1:
             subprocess.call('cls', shell=True)
             print('The passwords do not match!\nPlease re-type them again.')
-            system('pause >nul 2>&1')
-            subprocess.call('cls', shell=True)
             continue
 
         if account_password0 == str():
@@ -152,22 +146,21 @@ Your account email email is: {accounts[0][2]}
 Your account password password is: {account_password}
 ''')
 
-        print('What item (in red) do you want to change?')
+        print('What item do you want to change?')
         selected_item = input()
 
-        choosen_account = accounts.pop(0)
+        chosen_account = accounts.pop(0)
 
     elif len(accounts) > 1:
         while True:
             for account in enumerate(accounts):
                 account_password = len(account[1][3]) * '*' if account[1][3] != 'No Password' else 'No Password'
 
-                print(f'''              account[0]
+                print(f'''\t\t\t\taccount[0]
 Your account domain is: {account[1][0]}
 Your username is: {account[1][1]}
 Your account email is: {account[1][2]}
-Your account password is: {account_password}
-''')
+Your account password is: {account_password}''')
 
                 if not account[0] == (len(accounts) - 1):
                     continue
@@ -182,23 +175,23 @@ Your account password is: {account_password}
             if not isinstance(selection, int) or not 0 <= selection <= (len(accounts) - 1):
                 subprocess.call('cls', shell=True)
                 print('Invalid Input!\n')
-                print('Choose one account by inputing the number above the desired account(in red)!')
+                print('Choose one account by inputting the number above the desired account!')
                 system('pause >nul 2>&1')
                 subprocess.call('cls', shell=True)
                 continue
             elif 0 <= selection <= (len(accounts) - 1):
                 for account in enumerate(accounts):
                     if account[0] == selection:
-                        choosen_account = account[1]
+                        chosen_account = account[1]
                         break
             break
 
         subprocess.call('cls', shell=True)
         print(f'''
-Your account domain is: {choosen_account[0]}
-Your account username is: {choosen_account[1]}
-Your account email email is: {choosen_account[2]}
-Your account password password is: {'*'*len(choosen_account[3])}
+Your account domain is: {chosen_account[0]}
+Your account username is: {chosen_account[1]}
+Your account email email is: {chosen_account[2]}
+Your account password password is: {'*'*len(chosen_account[3])}
 ''')
 
         print('What item do you want to change?')
@@ -210,15 +203,15 @@ There is no account domain called {searched_account}.
 --Remember, account domains are CASE-SENSITIVE--
 
 What do you want to do?
--Retry(Give another domain)
--Main(Go to the MainMenu)
+-Retry (Give another domain)
+-Main (Go to the main menu)
 ''')
         answer = input()
 
         if answer.lower() in ('retry', 'r'):
             update_account()
         else:
-            MainMenu()
+            main_menu()
 
     if selected_item.lower() == 'domain':
         subprocess.call('cls', shell=True)
@@ -226,10 +219,10 @@ What do you want to do?
         selected_change = input()
         cursor.execute("UPDATE accounts SET domain=:account_domain_new WHERE domain=:account_domain_previous AND username=:username AND email=:email AND password=:password AND user=:user", {
             'account_domain_new': selected_change,
-            'account_domain_previous': choosen_account[0],
-            'username': choosen_account[1],
-            'email': choosen_account[2],
-            'password': choosen_account[3],
+            'account_domain_previous': chosen_account[0],
+            'username': chosen_account[1],
+            'email': chosen_account[2],
+            'password': chosen_account[3],
             'user': logged_user
         })
         connection.commit()
@@ -239,10 +232,10 @@ What do you want to do?
         selected_change = input()
         cursor.execute('UPDATE accounts SET username=:username_new WHERE domain=:account_domain AND username=:username_previous AND email=:email AND password=:password AND user=:username_previous', {
             'username_new': selected_change,
-            'account_domain': choosen_account[0],
-            'username_previous': choosen_account[1],
-            'email': choosen_account[2],
-            'password': choosen_account[3],
+            'account_domain': chosen_account[0],
+            'username_previous': chosen_account[1],
+            'email': chosen_account[2],
+            'password': chosen_account[3],
             'user': logged_user
         })
         connection.commit()
@@ -277,14 +270,13 @@ What do you want to change your account email to?
 
         cursor.execute('UPDATE accounts SET email=:email_new WHERE domain=:account_domain AND username=:username AND email=:email_previous AND password=:password AND user=:user', {
             'email_new': selected_change,
-            'account_domain': choosen_account[0],
-            'username': choosen_account[1],
-            'email_previous': choosen_account[2],
-            'password': choosen_account[3],
+            'account_domain': chosen_account[0],
+            'username': chosen_account[1],
+            'email_previous': chosen_account[2],
+            'password': chosen_account[3],
             'user': logged_user
         })
         connection.commit()
-
     elif selected_item.lower() == 'password':
         while True:
             subprocess.call('cls', shell=True)
@@ -308,15 +300,15 @@ The password will not be seen as you type
 
         cursor.execute('UPDATE accounts SET password=:password_new WHERE domain=:account_domain AND username=:username AND email=:email AND password=:password_previous AND user=:user', {
             'password_new': password_try0,
-            'account_domain': choosen_account[0],
-            'username': choosen_account[1],
-            'email': choosen_account[2],
-            'password_previous': choosen_account[3],
+            'account_domain': chosen_account[0],
+            'username': chosen_account[1],
+            'email': chosen_account[2],
+            'password_previous': chosen_account[3],
             'user': logged_user
         })
         connection.commit()
 
-        MainMenu()
+        main_menu()
 
 
 @outer_record
@@ -347,7 +339,7 @@ What do you want to do?
         if selection.lower() in ('retry', 'r'):
             delete_account()
         else:
-            MainMenu()
+            main_menu()
 
     elif len(accounts) > 1:
         subprocess.call('cls', shell=True)
@@ -394,7 +386,7 @@ Your account password is: {account_password}''')
             })
             connection.commit()
 
-            MainMenu()
+            main_menu()
 
     elif len(accounts) == 1:
         cursor.execute('DELETE FROM accounts WHERE domain=:account_domain AND user=:user', {
@@ -459,7 +451,7 @@ Your account password is: {account_password}''')
             subprocess.call('cls', shell=True)
             print(f'The {choosen_account[0]} account doesn\'t have a password!')
             system('pause >nul 2>&1')
-            MainMenu()
+            main_menu()
 
         subprocess.call('cls', shell=True)
         print('Do you want me to copy your account password to your clipboard?')
@@ -488,7 +480,7 @@ Your account password is: {account_password}''')
         system('pause >nul 2>&1')
 
         if account_password == 'No Password':
-            MainMenu()
+            main_menu()
 
         subprocess.call('cls', shell=True)
         print('Do you want me to copy your account password to your clipboard?')
@@ -518,7 +510,7 @@ What do you want to do?
         if selection.lower() in ('retry', 'r'):
             look_in_accounts()
         else:
-            MainMenu()
+            main_menu()
 
 
 @outer_record
@@ -672,7 +664,7 @@ Please try again.''')
         subprocess.call('cls', shell=True)
         print('There are no accounts saved yet!')
         system('pause >nul 2>&1')
-        MainMenu()
+        main_menu()
 
     subprocess.call('cls', shell=True)
     for account in accounts:
@@ -684,7 +676,7 @@ This account email is: {account[2]}
 This account password is: {account_password}
 ''')
     system('pause >nul 2>&1')
-    MainMenu()
+    main_menu()
 
 
 @atexit.register
@@ -699,18 +691,18 @@ def on_exit():
 
 
 @outer_record
-def MainMenu():
+def main_menu():
     while True:
 
         subprocess.call('cls', shell=True)
         print(f'\tMain Menu\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tLogged in as {logged_user}.')
         print('''What do you want to do?
--Add(Add an account)
--Remove(Delete an account)
--Edit(Modify an account)
--See(See an accounts details)
--File(Encrypt or Decrypt files)
--Delete User(Deletes a user)
+-Add (Add an account)
+-Remove (Delete an account)
+-Edit (Modify an account)
+-See (See an accounts details)
+-File (Encrypt or Decrypt files)
+-Delete User (Deletes a user)
 -Exit
 ''')
         action = input()
@@ -723,7 +715,7 @@ def MainMenu():
             eval(actions[action.lower()])
         elif action.lower() == 'exit':
             sys.exit()
-        elif action.lower() not in actions:
+        else:
             subprocess.call('cls', shell=True)
             print('Invalid Input!\n')
             print(f"Valid inputs are: add, remove, edit, see, file and exit")
