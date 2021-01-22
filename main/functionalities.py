@@ -1,5 +1,4 @@
 from pyAesCrypt import decryptFile, encryptFile
-from termcolor import colored
 from getpass import getpass
 from pathlib import Path
 from os import system
@@ -69,16 +68,16 @@ def valid_email(email):
 def add_account():
 
     subprocess.call('cls', shell=True)
-    print(colored('Account Domain', 'blue', attrs=['bold']))
+    print('Account Domain')
     account_name = input()
 
-    print(colored(f'\nUsername of the {account_name} account.', 'yellow', attrs=['bold']))
+    print(f'\nUsername of the {account_name} account.')
     account_username = input()
 
     while True:
-        print(colored(f'''
+        print(f'''
 Email of the {account_username} account.
-If you don't have an email then type none''', 'red', attrs=['bold']))
+If you don't have an email then type none''')
         account_email = input()
 
         if account_email.lower() == 'none':
@@ -86,11 +85,11 @@ If you don't have an email then type none''', 'red', attrs=['bold']))
             break
         elif not valid_email(account_email):
             subprocess.call('cls', shell=True)
-            print(colored(f'{account_email} is not a valid email!', 'white', 'on_red', attrs=['bold']))
+            print(f'{account_email} is not a valid email!')
             system('pause >nul 2>&1')
 
             subprocess.call('cls', shell=True)
-            print(colored('Do you want to leave it as None?', 'blue', attrs=['bold']))
+            print('Do you want to leave it as None?')
             answer = input()
 
             if answer.lower() in ('no', 'n'):
@@ -102,13 +101,13 @@ If you don't have an email then type none''', 'red', attrs=['bold']))
             break
 
     while True:
-        print(colored(f'\nThe password of the {account_username} account.', 'magenta', attrs=['bold']))
-        account_password0 = getpass(colored('As you type the password, it will not be seen:', 'cyan', attrs=['bold']))
-        account_password1 = getpass(colored('\nPlease re-type password:', 'red', attrs=['bold']))
+        print(f'\nThe password of the {account_username} account.')
+        account_password0 = getpass('As you type the password, it will not be seen:')
+        account_password1 = getpass('\nPlease re-type password:')
 
         if account_password0 != account_password1:
             subprocess.call('cls', shell=True)
-            print(colored('The passwords do not match!\nPlease re-type them again.', 'red', 'on_white', attrs=['bold']))
+            print('The passwords do not match!\nPlease re-type them again.')
             system('pause >nul 2>&1')
             subprocess.call('cls', shell=True)
             continue
@@ -131,7 +130,7 @@ If you don't have an email then type none''', 'red', attrs=['bold']))
 def update_account():
 
     subprocess.call('cls', shell=True)
-    print(f"What is the account domain of the account you want to {colored('update', 'red', attrs=['bold'])}?")
+    print(f"What is the account domain of the account you want to update")
     searched_account = input()
 
     subprocess.call('cls', shell=True)
@@ -147,13 +146,13 @@ def update_account():
         account_password = len(accounts[0][3]) * '*' if accounts[0][3] != 'No Password' else 'No Password'
 
         print(f'''
-Your account {colored('domain', 'red', attrs=['bold'])} is: {accounts[0][0]}
-Your account {colored('username', 'red', attrs=['bold'])} is: {accounts[0][1]}
-Your account {colored('email', 'red', attrs=['bold'])} email is: {accounts[0][2]}
-Your account {colored('password', 'red', attrs=['bold'])} password is: {account_password}
+Your account domain is: {accounts[0][0]}
+Your account username is: {accounts[0][1]}
+Your account email email is: {accounts[0][2]}
+Your account password password is: {account_password}
 ''')
 
-        print(colored('What item (in red) do you want to change?', 'yellow', attrs=['bold']))
+        print('What item (in red) do you want to change?')
         selected_item = input()
 
         choosen_account = accounts.pop(0)
@@ -163,7 +162,7 @@ Your account {colored('password', 'red', attrs=['bold'])} password is: {account_
             for account in enumerate(accounts):
                 account_password = len(account[1][3]) * '*' if account[1][3] != 'No Password' else 'No Password'
 
-                print(f'''              {colored(account[0], 'red', attrs=['bold'])}
+                print(f'''              account[0]
 Your account domain is: {account[1][0]}
 Your username is: {account[1][1]}
 Your account email is: {account[1][2]}
@@ -174,7 +173,7 @@ Your account password is: {account_password}
                     continue
                 break
 
-            print(colored('Which account do you want to update?', 'blue', attrs=['bold']))
+            print('Which account do you want to update?')
             selected_account = input()
 
             if selected_account.isdigit():
@@ -182,8 +181,8 @@ Your account password is: {account_password}
 
             if not isinstance(selection, int) or not 0 <= selection <= (len(accounts) - 1):
                 subprocess.call('cls', shell=True)
-                print(colored('Invalid Input!\n', 'red', attrs=['bold']))
-                print(colored('Choose one account by inputing the number above the desired account(in red)!', 'green', attrs=['bold']))
+                print('Invalid Input!\n')
+                print('Choose one account by inputing the number above the desired account(in red)!')
                 system('pause >nul 2>&1')
                 subprocess.call('cls', shell=True)
                 continue
@@ -196,24 +195,24 @@ Your account password is: {account_password}
 
         subprocess.call('cls', shell=True)
         print(f'''
-Your account {colored('domain', 'red', attrs=['bold'])} is: {choosen_account[0]}
-Your account {colored('username', 'red', attrs=['bold'])} is: {choosen_account[1]}
-Your account {colored('email', 'red', attrs=['bold'])} email is: {choosen_account[2]}
-Your account {colored('password', 'red', attrs=['bold'])} password is: {'*'*len(choosen_account[3])}
+Your account domain is: {choosen_account[0]}
+Your account username is: {choosen_account[1]}
+Your account email email is: {choosen_account[2]}
+Your account password password is: {'*'*len(choosen_account[3])}
 ''')
 
-        print(colored('What item do you want to change?', 'yellow', attrs=['bold']))
+        print('What item do you want to change?')
         selected_item = input()
     else:
         subprocess.call('cls', shell=True)
-        print(colored(f'''
+        print(f'''
 There is no account domain called {searched_account}.
 --Remember, account domains are CASE-SENSITIVE--
 
 What do you want to do?
 -Retry(Give another domain)
 -Main(Go to the MainMenu)
-''', 'yellow', attrs=['bold']))
+''')
         answer = input()
 
         if answer.lower() in ('retry', 'r'):
@@ -223,7 +222,7 @@ What do you want to do?
 
     if selected_item.lower() == 'domain':
         subprocess.call('cls', shell=True)
-        print(colored("\nWhat do you want to change the account domain to?", "yellow", attrs=["bold"]))
+        print("\nWhat do you want to change the account domain to?")
         selected_change = input()
         cursor.execute("UPDATE accounts SET domain=:account_domain_new WHERE domain=:account_domain_previous AND username=:username AND email=:email AND password=:password AND user=:user", {
             'account_domain_new': selected_change,
@@ -236,7 +235,7 @@ What do you want to do?
         connection.commit()
     elif selected_item.lower() == 'username':
         subprocess.call('cls', shell=True)
-        print(colored('\nWhat do you want to change your username to?', 'blue', attrs=['bold']))
+        print('\nWhat do you want to change your username to?')
         selected_change = input()
         cursor.execute('UPDATE accounts SET username=:username_new WHERE domain=:account_domain AND username=:username_previous AND email=:email AND password=:password AND user=:username_previous', {
             'username_new': selected_change,
@@ -250,9 +249,9 @@ What do you want to do?
     elif selected_item.lower() == 'email':
         while True:
             subprocess.call('cls', shell=True)
-            print(colored('''
+            print('''
 What do you want to change your account email to?
-(Type none if no email)''', 'red', attrs=['bold']))
+(Type none if no email)''')
             selected_change = input()
 
             if selected_change.lower() == 'none':
@@ -260,11 +259,11 @@ What do you want to change your account email to?
                 break
             elif not valid_email(selected_change):
                 subprocess.call('cls', shell=True)
-                print(colored(f'{selected_change} is not a valid email!', 'white', 'on_red', attrs=['bold']))
+                print(f'{selected_change} is not a valid email!')
                 system('pause >nul 2>&1')
 
                 subprocess.call('cls', shell=True)
-                print(colored('Do you want to leave it as None?', 'blue', attrs=['bold']))
+                print('Do you want to leave it as None?')
                 answer = input()
 
                 if answer.lower() in ('no', 'n'):
@@ -289,17 +288,17 @@ What do you want to change your account email to?
     elif selected_item.lower() == 'password':
         while True:
             subprocess.call('cls', shell=True)
-            print(colored('''
+            print('''
 What do you want to change your account password to?
 The password will not be seen as you type
-(type none if no password)''', 'magenta', attrs=['bold']))
+(type none if no password)''')
             password_try0 = getpass('')
-            password_try1 = getpass(colored('Re-enter password:', 'magenta', attrs=['bold']))
+            password_try1 = getpass('Re-enter password:')
 
             if password_try0 != password_try1:
 
                 subprocess.call('cls', shell=True)
-                print(colored('The passwords are not the same!\nTry again.', 'red', attrs=['bold']))
+                print('The passwords are not the same!\nTry again.')
                 system('pause >nul 2>&1')
                 continue
             break
@@ -324,7 +323,7 @@ The password will not be seen as you type
 def delete_account():
 
     subprocess.call('cls', shell=True)
-    print(f'What is the account domain you want to {colored("delete", "red", attrs=["bold"])}?')
+    print(f'What is the account domain you want to delete?')
     searched_account = input()
 
     cursor.execute("SELECT * FROM accounts WHERE domain=:account_domain AND user=:user", {
@@ -336,14 +335,14 @@ def delete_account():
 
     if len(accounts) == 0:
         subprocess.call('cls', shell=True)
-        print(colored(f'''
+        print(f'''
 There is no account domain called {searched_account}.
 --Remember, account domains are CASE-SENSITIVE--
 
 What do you want to do?
 -Retry(Give another domain)
 -Main(Go to the MainMenu)
-''', "yellow", attrs=["bold"]))
+''')
         selection = input()
         if selection.lower() in ('retry', 'r'):
             delete_account()
@@ -356,19 +355,18 @@ What do you want to do?
             for account in enumerate(accounts):
                 account_password = len(account[1][3]) * '*' if account[1][3] != 'No Password' else 'No Password'
 
-                print(colored(f'''
-                {colored(account[0], 'red', attrs=['bold'])}
+                print(f'''
+                account[0]
 Your account domain is: {account[1][0]}
 Your username is: {account[1][1]}
 Your account email is: {account[1][2]}
-Your account password is: {account_password}
-                ''', 'green', attrs=['bold']))
+Your account password is: {account_password}''')
 
                 if account[0] != (len(accounts) - 1):
                     continue
                 break
 
-            print(f'Which account do you want to {colored("delete", "red", attrs=["bold"])}?')
+            print(f'Which account do you want to delete?')
             selection = input()
 
             if selection.isdigit():
@@ -376,8 +374,8 @@ Your account password is: {account_password}
 
             if not isinstance(selection, int) or not 0 <= selection <= (len(accounts) - 1):
                 subprocess.call('cls', shell=True)
-                print(colored('Invalid Input!\n', 'red', attrs=['bold']))
-                print(colored('Choose one account by inputing the number above the desired account(in red)', 'green', attrs=['bold']))
+                print('Invalid Input!\n')
+                print('Choose one account by inputing the number above the desired account(in red)')
                 system('pause >nul 2>&1')
                 subprocess.call('cls', shell=True)
                 continue
@@ -410,7 +408,7 @@ Your account password is: {account_password}
 def look_in_accounts():
 
     subprocess.call('cls', shell=True)
-    print(colored('What is the Account Domain you are looking for?', 'yellow', attrs=['bold']))
+    print('What is the Account Domain you are looking for?')
     account_domain = input()
 
     cursor.execute('SELECT * FROM accounts WHERE domain=:account_domain AND user=:user', {
@@ -426,19 +424,18 @@ def look_in_accounts():
             for account in enumerate(accounts):
                 account_password = len(account[1][3]) * '*' if account[1][3] != 'No Password' else 'No Password'
 
-                print(colored(f'''
-                {colored(account[0], 'red', attrs=['bold'])}
+                print(f'''
+                {account[0]}
 Your account domain is: {account[1][0]}
 Your username is: {account[1][1]}
 Your account email is: {account[1][2]}
-Your account password is: {account_password}
-                ''', 'green', attrs=['bold']))
+Your account password is: {account_password}''')
 
                 if not account[0] == (len(accounts) - 1):
                     continue
                 break
 
-            print(colored('Which account do you want to see the password of?', 'blue', attrs=['bold']))
+            print('Which account do you want to see the password of?')
             account_selected = input()
 
             if account_selected.isdigit():
@@ -446,8 +443,8 @@ Your account password is: {account_password}
 
             if not isinstance(account_selected, int) or not 0 <= account_selected <= (len(accounts) - 1):
                 subprocess.call('cls', shell=True)
-                print(colored('Invalid Input!\n', 'red', attrs=['bold']))
-                print(colored('Choose one account by inputing the number above the desired account(in red).', 'green', attrs=['bold']))
+                print('Invalid Input!\n')
+                print('Choose one account by inputing the number above the desired account.')
                 system('pause >nul 2>&1')
                 subprocess.call('cls', shell=True)
                 continue
@@ -465,59 +462,58 @@ Your account password is: {account_password}
             MainMenu()
 
         subprocess.call('cls', shell=True)
-        print(colored('Do you want me to copy your account password to your clipboard?', 'red', attrs=['bold']))
+        print('Do you want me to copy your account password to your clipboard?')
         password_selection = input()
 
         if password_selection.lower() in ('no', 'n'):
             subprocess.call('cls', shell=True)
-            print(colored(f'Your account password is: {choosen_account[3]}', 'white', attrs=['bold']))
+            print(f'Your account password is: {choosen_account[3]}')
             system('pause >nul 2>&1')
 
         else:
             subprocess.call('cls', shell=True)
             pyperclip.copy(choosen_account[3])
-            print(colored('Your account password has been copied to your clipboard', 'blue', attrs=['bold']))
+            print('Your account password has been copied to your clipboard')
             system('pause >nul 2>&1')
 
     elif len(accounts) == 1:
         account_password = len(accounts[0][3]) * '*' if accounts[0][3] != 'No Password' else 'No Password'
 
         subprocess.call('cls', shell=True)
-        print(colored(f'''
+        print(f'''
 Your account domain is: {accounts[0][0]}
 Your username is: {accounts[0][1]}
 Your account email is: {accounts[0][2]}
-Your account password is: {account_password}
-        ''', 'green', attrs=['bold']))
+Your account password is: {account_password}''')
         system('pause >nul 2>&1')
 
         if account_password == 'No Password':
             MainMenu()
 
         subprocess.call('cls', shell=True)
-        print(colored('Do you want me to copy your account password to your clipboard?', 'red', attrs=['bold']))
+        print('Do you want me to copy your account password to your clipboard?')
         copy_selection = input()
 
         if copy_selection.lower() in ('no', 'n'):
             subprocess.call('cls', shell=True)
-            print(colored(f'Your account password is: {accounts[0][3]}', 'white', attrs=['bold']))
+            print(f'Your account password is: {accounts[0][3]}')
             system('pause >nul 2>&1')
 
         subprocess.call('cls', shell=True)
         pyperclip.copy(accounts[0][3])
-        print(colored('Your account password has been copied to your clipboard', 'blue', attrs=['bold']))
+        print('Your account password has been copied to your clipboard')
         system('pause >nul 2>&1')
 
     else:
         subprocess.call('cls', shell=True)
-        print(colored(f'''
+        print(f'''
 There is no account domain called {account_domain}.
 --Remember, account domains are CASE-SENSITIVE--
 
 What do you want to do?
 -Retry(Give another domain)
 -Main(Go to the MainMenu)
-''', "yellow", attrs=["bold"]))
+''')
         selection = input()
         if selection.lower() in ('retry', 'r'):
             look_in_accounts()
@@ -531,14 +527,14 @@ def file_enc_and_dec():
     buffer_size = 64
 
     subprocess.call('cls', shell=True)
-    print(colored('Do you want to encrypt or decrypt a file?'))
+    print('Do you want to encrypt or decrypt a file?')
     selection = input()
 
     if selection.lower() in ('encrypt', 'enc'):
 
         while True:
             subprocess.call('cls', shell=True)
-            print(colored('Full directory to file', 'yellow', attrs=['bold']))
+            print('Full directory to file')
             path_to_file = Path(input().replace('\\', '/'))
 
             file_ = path_to_file.name
@@ -546,20 +542,20 @@ def file_enc_and_dec():
             if not path_to_file.exists():
 
                 subprocess.call('cls', shell=True)
-                print(colored('Invalid Directory!!', 'white', 'on_red', attrs=['bold']))
-                print(colored(f'Choose a valid directory, the directory {path_to_file}, doesn\'t exist!', 'white', 'on_red', attrs=['bold']))
+                print('Invalid Directory!!')
+                print(f'Choose a valid directory, the directory {path_to_file}, doesn\'t exist!')
                 system('pause >nul 2>&1')
                 continue
 
             while True:
-                print(colored('\nDirectory of where the file will end', 'blue', attrs=['bold']))
+                print('\nDirectory of where the file will end')
                 end_directory = Path(input().replace('\\', '/'))
 
                 if not end_directory.exists():
 
                     subprocess.call('cls', shell=True)
-                    print(colored('Invalid Directory!!', 'white', 'on_red', attrs=['bold']))
-                    print(colored(f'Choose a valid directory, the directory {end_directory}, doesn\'t exist!', 'white', 'on_red', attrs=['bold']))
+                    print('Invalid Directory!!')
+                    print(f'Choose a valid directory, the directory {end_directory}, doesn\'t exist!')
                     system('pause >nul 2>&1')
                     subprocess.call('cls', shell=True)
                     continue
@@ -573,7 +569,7 @@ def file_enc_and_dec():
 
             while True:
                 subprocess.call('cls', shell=True)
-                print(colored('Password of the encryption', 'magenta', attrs=['bold']))
+                print('Password of the encryption')
                 password = input()
 
                 break
@@ -586,7 +582,7 @@ def file_enc_and_dec():
 
         while True:
             subprocess.call('cls', shell=True)
-            print(colored('Full directory to file', 'yellow', attrs=['bold']))
+            print('Full directory to file')
             path_to_file = Path(input().replace('\\', '/'))
 
             file_ = path_to_file.name
@@ -594,19 +590,19 @@ def file_enc_and_dec():
             if not path_to_file.exists():
 
                 subprocess.call('cls', shell=True)
-                print(colored('Invalid Directory!!', 'white', 'on_red', attrs=['bold']))
-                print(colored(f'Choose a valid directory, the directory {path_to_file}, doesn\'t exist!', 'white', 'on_red', attrs=['bold']))
+                print('Invalid Directory!!')
+                print(f'Choose a valid directory, the directory {path_to_file}, doesn\'t exist!')
                 system('pause >nul 2>&1')
                 continue
 
             while True:
-                print(colored('\nDirectory of where the file will end', 'blue', attrs=['bold']))
+                print('\nDirectory of where the file will end')
                 end_directory = Path(input().replace('\\', '/'))
 
                 if not end_directory.exists():
                     subprocess.call('cls', shell=True)
-                    print(colored('Invalid Directory!!', 'white', 'on_red', attrs=['bold']))
-                    print(colored(f'Choose a valid directory, the directory {end_directory}, doesn\'t exist!', 'white', 'on_red', attrs=['bold']))
+                    print('Invalid Directory!!')
+                    print(f'Choose a valid directory, the directory {end_directory}, doesn\'t exist!')
                     system('pause >nul 2>&1')
                     subprocess.call('cls', shell=True)
                     continue
@@ -622,7 +618,7 @@ def file_enc_and_dec():
 
             while True:
                 subprocess.call('cls', shell=True)
-                print(colored('Password of the encryption', 'magenta', attrs=['bold']))
+                print('Password of the encryption')
                 password = input()
 
                 try:
@@ -630,15 +626,15 @@ def file_enc_and_dec():
                     break
                 except ValueError:
                     subprocess.call('cls', shell=True)
-                    print(colored('The Password is wrong!', 'red', attrs=['bold']))
+                    print('The Password is wrong!')
                     system('pause >nul 2>&1')
                     continue
             break
     else:
 
         subprocess.call('cls', shell=True)
-        print(colored('Invalid Answer!!', 'white', 'on_red', attrs=['bold']))
-        print(colored("Valid answers are: 'encrypt' or 'enc', and/or 'decrypt' or 'dec'", 'red', attrs=['bold']))
+        print('Invalid Answer!!')
+        print("Valid answers are: 'encrypt' or 'enc', and/or 'decrypt' or 'dec'")
         system('pause >nul 2>&1')
 
         file_enc_and_dec()
@@ -682,10 +678,10 @@ Please try again.''')
     for account in accounts:
         account_password = len(account[3]) * '*' if account[3] != 'No Password' else 'No Password'
         print(f'''
-This account {colored('domain', 'red', attrs=['bold'])} is: {account[0]}
-This account {colored('username', 'red', attrs=['bold'])} is: {account[1]}
-This account {colored('email', 'red', attrs=['bold'])} is: {account[2]}
-This account {colored('password', 'red', attrs=['bold'])} is: {account_password}
+This account domain is: {account[0]}
+This account username is: {account[1]}
+This account email is: {account[2]}
+This account password is: {account_password}
 ''')
     system('pause >nul 2>&1')
     MainMenu()
@@ -707,8 +703,8 @@ def MainMenu():
     while True:
 
         subprocess.call('cls', shell=True)
-        print(colored(f'\tMain Menu\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tLogged in as {logged_user}.', 'red', attrs=['bold']))
-        print(colored('''What do you want to do?
+        print(f'\tMain Menu\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tLogged in as {logged_user}.')
+        print('''What do you want to do?
 -Add(Add an account)
 -Remove(Delete an account)
 -Edit(Modify an account)
@@ -716,7 +712,7 @@ def MainMenu():
 -File(Encrypt or Decrypt files)
 -Delete User(Deletes a user)
 -Exit
-''', 'green', attrs=['bold']))
+''')
         action = input()
 
         if action == '':
@@ -729,13 +725,8 @@ def MainMenu():
             sys.exit()
         elif action.lower() not in actions:
             subprocess.call('cls', shell=True)
-            print(colored('Invalid Input!\n', 'white', 'on_red', attrs=['underline', 'bold']))
-            print(colored(f"Valid inputs are: {colored('add', 'red', attrs=['bold'])}{colored(',', 'green', attrs=['bold'])} \
-{colored('remove', 'red', attrs=['bold'])}{colored(',', 'green', attrs=['bold'])} \
-{colored('edit', 'red', attrs=['bold'])}{colored(',', 'green', attrs=['bold'])} \
-{colored('see', 'red', attrs=['bold'])}{colored(',', 'green', attrs=['bold'])} \
-{colored('file', 'red', attrs=['bold'])}{colored(', and', 'green', attrs=['bold'])} \
-{colored('exit', 'red', attrs=['bold'])}", 'green', attrs=['bold']))
+            print('Invalid Input!\n')
+            print(f"Valid inputs are: add, remove, edit, see, file and exit")
             system('pause >nul 2>&1')
             continue
 
