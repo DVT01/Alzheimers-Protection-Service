@@ -1,6 +1,8 @@
 from pyAesCrypt import decryptFile, encryptFile
 from termcolor import colored
 from getpass import getpass
+from pathlib import Path
+from os import system
 import subprocess
 import pyperclip
 import logging
@@ -9,10 +11,9 @@ import sqlite3
 import atexit
 import main
 import sys
-import os
 import re
 
-accions = {
+actions = {
     'add': 'add_account()',
     'remove': 'delete_account()',
     'edit': 'update_account()',
@@ -21,9 +22,8 @@ accions = {
     'see all': 'see_all()'
 }
 
-logfile = 'logs.log'
-logfile_path = os.path.join(os.path.join(os.environ['LOCALAPPDATA'], 'RSIH APS'), logfile)
-logging.basicConfig(filename=logfile_path, level=logging.INFO, format='%(asctime)s:%(message)s')
+logfile = Path('logs.log')
+logging.basicConfig(filename=logfile, level=logging.INFO, format='%(asctime)s:%(message)s')
 
 
 def outer_record(original_function):
@@ -41,11 +41,12 @@ def on_startup(user='Guest', user_password=None):
     logged_user = user
     logged_user_password = user_password
     db_table_name = f'{logged_user}_accounts'
-    database = 'testing.db'
-    database_path = os.path.join(os.path.join(os.environ['LOCALAPPDATA'], 'RSIH APS'), database)
+    database = Path('testing.db')
+
     if user == 'Guest':
-        database_path = ':memory:'
-    connection = sqlite3.connect(database_path)
+        database = ':memory:'
+
+    connection = sqlite3.connect(database)
     cursor = connection.cursor()
     cursor.execute('CREATE TABLE IF NOT EXISTS accounts(domain TEXT, username TEXT, email TEXT, password TEXT, user TEXT)')
     MainMenu()
@@ -86,7 +87,7 @@ If you don't have an email then type none''', 'red', attrs=['bold']))
         elif not valid_email(account_email):
             subprocess.call('cls', shell=True)
             print(colored(f'{account_email} is not a valid email!', 'white', 'on_red', attrs=['bold']))
-            os.system('pause >nul 2>&1')
+            system('pause >nul 2>&1')
 
             subprocess.call('cls', shell=True)
             print(colored('Do you want to leave it as None?', 'blue', attrs=['bold']))
@@ -108,7 +109,7 @@ If you don't have an email then type none''', 'red', attrs=['bold']))
         if account_password0 != account_password1:
             subprocess.call('cls', shell=True)
             print(colored('The passwords do not match!\nPlease re-type them again.', 'red', 'on_white', attrs=['bold']))
-            os.system('pause >nul 2>&1')
+            system('pause >nul 2>&1')
             subprocess.call('cls', shell=True)
             continue
 
@@ -183,7 +184,7 @@ Your account password is: {account_password}
                 subprocess.call('cls', shell=True)
                 print(colored('Invalid Input!\n', 'red', attrs=['bold']))
                 print(colored('Choose one account by inputing the number above the desired account(in red)!', 'green', attrs=['bold']))
-                os.system('pause >nul 2>&1')
+                system('pause >nul 2>&1')
                 subprocess.call('cls', shell=True)
                 continue
             elif 0 <= selection <= (len(accounts) - 1):
@@ -260,7 +261,7 @@ What do you want to change your account email to?
             elif not valid_email(selected_change):
                 subprocess.call('cls', shell=True)
                 print(colored(f'{selected_change} is not a valid email!', 'white', 'on_red', attrs=['bold']))
-                os.system('pause >nul 2>&1')
+                system('pause >nul 2>&1')
 
                 subprocess.call('cls', shell=True)
                 print(colored('Do you want to leave it as None?', 'blue', attrs=['bold']))
@@ -299,7 +300,7 @@ The password will not be seen as you type
 
                 subprocess.call('cls', shell=True)
                 print(colored('The passwords are not the same!\nTry again.', 'red', attrs=['bold']))
-                os.system('pause >nul 2>&1')
+                system('pause >nul 2>&1')
                 continue
             break
 
@@ -377,7 +378,7 @@ Your account password is: {account_password}
                 subprocess.call('cls', shell=True)
                 print(colored('Invalid Input!\n', 'red', attrs=['bold']))
                 print(colored('Choose one account by inputing the number above the desired account(in red)', 'green', attrs=['bold']))
-                os.system('pause >nul 2>&1')
+                system('pause >nul 2>&1')
                 subprocess.call('cls', shell=True)
                 continue
             elif 0 <= selection <= (len(accounts) - 1):
@@ -447,7 +448,7 @@ Your account password is: {account_password}
                 subprocess.call('cls', shell=True)
                 print(colored('Invalid Input!\n', 'red', attrs=['bold']))
                 print(colored('Choose one account by inputing the number above the desired account(in red).', 'green', attrs=['bold']))
-                os.system('pause >nul 2>&1')
+                system('pause >nul 2>&1')
                 subprocess.call('cls', shell=True)
                 continue
             elif 0 <= account_selected <= (len(accounts) - 1):
@@ -460,7 +461,7 @@ Your account password is: {account_password}
         if choosen_account[3] == 'No Password':
             subprocess.call('cls', shell=True)
             print(f'The {choosen_account[0]} account doesn\'t have a password!')
-            os.system('pause >nul 2>&1')
+            system('pause >nul 2>&1')
             MainMenu()
 
         subprocess.call('cls', shell=True)
@@ -470,13 +471,13 @@ Your account password is: {account_password}
         if password_selection.lower() in ('no', 'n'):
             subprocess.call('cls', shell=True)
             print(colored(f'Your account password is: {choosen_account[3]}', 'white', attrs=['bold']))
-            os.system('pause >nul 2>&1')
+            system('pause >nul 2>&1')
 
         else:
             subprocess.call('cls', shell=True)
             pyperclip.copy(choosen_account[3])
             print(colored('Your account password has been copied to your clipboard', 'blue', attrs=['bold']))
-            os.system('pause >nul 2>&1')
+            system('pause >nul 2>&1')
 
     elif len(accounts) == 1:
         account_password = len(accounts[0][3]) * '*' if accounts[0][3] != 'No Password' else 'No Password'
@@ -488,7 +489,7 @@ Your username is: {accounts[0][1]}
 Your account email is: {accounts[0][2]}
 Your account password is: {account_password}
         ''', 'green', attrs=['bold']))
-        os.system('pause >nul 2>&1')
+        system('pause >nul 2>&1')
 
         if account_password == 'No Password':
             MainMenu()
@@ -500,12 +501,12 @@ Your account password is: {account_password}
         if copy_selection.lower() in ('no', 'n'):
             subprocess.call('cls', shell=True)
             print(colored(f'Your account password is: {accounts[0][3]}', 'white', attrs=['bold']))
-            os.system('pause >nul 2>&1')
+            system('pause >nul 2>&1')
 
         subprocess.call('cls', shell=True)
         pyperclip.copy(accounts[0][3])
         print(colored('Your account password has been copied to your clipboard', 'blue', attrs=['bold']))
-        os.system('pause >nul 2>&1')
+        system('pause >nul 2>&1')
 
     else:
         subprocess.call('cls', shell=True)
@@ -538,28 +539,28 @@ def file_enc_and_dec():
         while True:
             subprocess.call('cls', shell=True)
             print(colored('Full directory to file', 'yellow', attrs=['bold']))
-            path_to_file = input().replace('\\', '/')
+            path_to_file = Path(input().replace('\\', '/'))
 
-            file_ = os.path.basename(path_to_file)
+            file_ = path_to_file.name
 
-            if not os.path.exists(path_to_file):
+            if not path_to_file.exists():
 
                 subprocess.call('cls', shell=True)
                 print(colored('Invalid Directory!!', 'white', 'on_red', attrs=['bold']))
                 print(colored(f'Choose a valid directory, the directory {path_to_file}, doesn\'t exist!', 'white', 'on_red', attrs=['bold']))
-                os.system('pause >nul 2>&1')
+                system('pause >nul 2>&1')
                 continue
 
             while True:
                 print(colored('\nDirectory of where the file will end', 'blue', attrs=['bold']))
-                end_directory = input().replace('\\', '/')
+                end_directory = Path(input().replace('\\', '/'))
 
-                if not os.path.exists(end_directory):
+                if not end_directory.exists():
 
                     subprocess.call('cls', shell=True)
                     print(colored('Invalid Directory!!', 'white', 'on_red', attrs=['bold']))
                     print(colored(f'Choose a valid directory, the directory {end_directory}, doesn\'t exist!', 'white', 'on_red', attrs=['bold']))
-                    os.system('pause >nul 2>&1')
+                    system('pause >nul 2>&1')
                     subprocess.call('cls', shell=True)
                     continue
 
@@ -586,27 +587,27 @@ def file_enc_and_dec():
         while True:
             subprocess.call('cls', shell=True)
             print(colored('Full directory to file', 'yellow', attrs=['bold']))
-            path_to_file = input().replace('\\', '/')
+            path_to_file = Path(input().replace('\\', '/'))
 
-            file_ = os.path.basename(path_to_file)
+            file_ = path_to_file.name
 
-            if not os.path.exists(path_to_file):
+            if not path_to_file.exists():
 
                 subprocess.call('cls', shell=True)
                 print(colored('Invalid Directory!!', 'white', 'on_red', attrs=['bold']))
                 print(colored(f'Choose a valid directory, the directory {path_to_file}, doesn\'t exist!', 'white', 'on_red', attrs=['bold']))
-                os.system('pause >nul 2>&1')
+                system('pause >nul 2>&1')
                 continue
 
             while True:
                 print(colored('\nDirectory of where the file will end', 'blue', attrs=['bold']))
-                end_directory = input().replace('\\', '/')
+                end_directory = Path(input().replace('\\', '/'))
 
-                if not os.path.exists(end_directory):
+                if not end_directory.exists():
                     subprocess.call('cls', shell=True)
                     print(colored('Invalid Directory!!', 'white', 'on_red', attrs=['bold']))
                     print(colored(f'Choose a valid directory, the directory {end_directory}, doesn\'t exist!', 'white', 'on_red', attrs=['bold']))
-                    os.system('pause >nul 2>&1')
+                    system('pause >nul 2>&1')
                     subprocess.call('cls', shell=True)
                     continue
 
@@ -630,7 +631,7 @@ def file_enc_and_dec():
                 except ValueError:
                     subprocess.call('cls', shell=True)
                     print(colored('The Password is wrong!', 'red', attrs=['bold']))
-                    os.system('pause >nul 2>&1')
+                    system('pause >nul 2>&1')
                     continue
             break
     else:
@@ -638,7 +639,7 @@ def file_enc_and_dec():
         subprocess.call('cls', shell=True)
         print(colored('Invalid Answer!!', 'white', 'on_red', attrs=['bold']))
         print(colored("Valid answers are: 'encrypt' or 'enc', and/or 'decrypt' or 'dec'", 'red', attrs=['bold']))
-        os.system('pause >nul 2>&1')
+        system('pause >nul 2>&1')
 
         file_enc_and_dec()
 
@@ -660,7 +661,7 @@ def see_all():
             subprocess.call('cls', shell=True)
             print('''Incorrect Password!
 Please try again.''')
-            os.system('pause >nul 2>&1')
+            system('pause >nul 2>&1')
             tries += 1
             continue
         break
@@ -674,7 +675,7 @@ Please try again.''')
     if accounts == list():
         subprocess.call('cls', shell=True)
         print('There are no accounts saved yet!')
-        os.system('pause >nul 2>&1')
+        system('pause >nul 2>&1')
         MainMenu()
 
     subprocess.call('cls', shell=True)
@@ -686,7 +687,7 @@ This account {colored('username', 'red', attrs=['bold'])} is: {account[1]}
 This account {colored('email', 'red', attrs=['bold'])} is: {account[2]}
 This account {colored('password', 'red', attrs=['bold'])} is: {account_password}
 ''')
-    os.system('pause >nul 2>&1')
+    system('pause >nul 2>&1')
     MainMenu()
 
 
@@ -698,7 +699,7 @@ def on_exit():
         connection.close()
     except NameError as error:
         print('Run the main.py file instead of this please!')
-        os.system('pause >nul 2>&1')
+        system('pause >nul 2>&1')
 
 
 @outer_record
@@ -722,11 +723,11 @@ def MainMenu():
             continue
         elif accion.lower() == 'delete user' and logged_user != 'Guest':
             main.remove(logged_user, logged_user_password)
-        elif accion.lower() in accions:
-            eval(accions[accion.lower()])
+        elif accion.lower() in actions:
+            eval(actions[accion.lower()])
         elif accion.lower() == 'exit':
             sys.exit()
-        elif accion.lower() not in accions:
+        elif accion.lower() not in actions:
             subprocess.call('cls', shell=True)
             print(colored('Invalid Input!\n', 'white', 'on_red', attrs=['underline', 'bold']))
             print(colored(f"Valid inputs are: {colored('add', 'red', attrs=['bold'])}{colored(',', 'green', attrs=['bold'])} \
@@ -735,7 +736,7 @@ def MainMenu():
 {colored('see', 'red', attrs=['bold'])}{colored(',', 'green', attrs=['bold'])} \
 {colored('file', 'red', attrs=['bold'])}{colored(', and', 'green', attrs=['bold'])} \
 {colored('exit', 'red', attrs=['bold'])}", 'green', attrs=['bold']))
-            os.system('pause >nul 2>&1')
+            system('pause >nul 2>&1')
             continue
 
 
