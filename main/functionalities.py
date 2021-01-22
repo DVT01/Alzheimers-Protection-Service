@@ -717,17 +717,17 @@ def MainMenu():
 -Delete User(Deletes a user)
 -Exit
 ''', 'green', attrs=['bold']))
-        accion = input()
+        action = input()
 
-        if accion == '':
+        if action == '':
             continue
-        elif accion.lower() == 'delete user' and logged_user != 'Guest':
+        elif action.lower() == 'delete user' and logged_user != 'Guest':
             main.remove(logged_user, logged_user_password)
-        elif accion.lower() in actions:
-            eval(actions[accion.lower()])
-        elif accion.lower() == 'exit':
+        elif action.lower() in actions:
+            eval(actions[action.lower()])
+        elif action.lower() == 'exit':
             sys.exit()
-        elif accion.lower() not in actions:
+        elif action.lower() not in actions:
             subprocess.call('cls', shell=True)
             print(colored('Invalid Input!\n', 'white', 'on_red', attrs=['underline', 'bold']))
             print(colored(f"Valid inputs are: {colored('add', 'red', attrs=['bold'])}{colored(',', 'green', attrs=['bold'])} \
