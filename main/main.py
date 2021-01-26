@@ -1,5 +1,5 @@
 from pyAesCrypt import decryptFile, encryptFile
-from main.Database import Database
+import main.Database as Database
 from getpass import getpass
 from pathlib import Path
 from os import system
@@ -54,33 +54,13 @@ def add_account():
 def update_account():
 
     subprocess.call('cls', shell=True)
-    print(f"What is the account domain of the account you want to update")
+    print(f"What is the name of the account you want to update")
     searched_account = input()
 
-    subprocess.call('cls', shell=True)
-    cursor.execute('SELECT * FROM accounts WHERE domain=:account_domain AND user=:user', {
-        'account_domain': searched_account,
-        'user': logged_user
-    })
-    connection.commit()
-    accounts = cursor.fetchall()
+    accounts = db.fetchall()
 
     subprocess.call('cls', shell=True)
-    if len(accounts) == 1:
-        account_password = len(accounts[0][3]) * '*' if accounts[0][3] != 'No Password' else 'No Password'
-
-        print(f'''
-Your account domain is: {accounts[0][0]}
-Your account username is: {accounts[0][1]}
-Your account email email is: {accounts[0][2]}
-Your account password password is: {account_password}
-''')
-
-        print('What item do you want to change?')
-        selected_item = input()
-
-        chosen_account = accounts.pop(0)
-    elif len(accounts) > 1:
+    if len(accounts) >= 1:
         while True:
             for account in enumerate(accounts):
                 account_password = len(account[1][3]) * '*' if account[1][3] != 'No Password' else 'No Password'
@@ -140,34 +120,18 @@ What do you want to do?
         if answer.lower() in ('retry', 'r'):
             update_account()
         else:
-            main_menu()
+            return
 
-    if selected_item.lower() == 'domain':
+    if selected_item.lower() == 'name':
         subprocess.call('cls', shell=True)
-        print("\nWhat do you want to change the account domain to?")
+        print("\nWhat do you want to change the account name to?")
         selected_change = input()
-        cursor.execute("UPDATE accounts SET domain=:account_domain_new WHERE domain=:account_domain_previous AND username=:username AND email=:email AND password=:password AND user=:user", {
-            'account_domain_new': selected_change,
-            'account_domain_previous': chosen_account[0],
-            'username': chosen_account[1],
-            'email': chosen_account[2],
-            'password': chosen_account[3],
-            'user': logged_user
-        })
-        connection.commit()
+        db.update_account(chosen_account[0], selection, Database.UPDATE_NAME, selected_change)
     elif selected_item.lower() == 'username':
         subprocess.call('cls', shell=True)
         print('\nWhat do you want to change your username to?')
         selected_change = input()
-        cursor.execute('UPDATE accounts SET username=:username_new WHERE domain=:account_domain AND username=:username_previous AND email=:email AND password=:password AND user=:username_previous', {
-            'username_new': selected_change,
-            'account_domain': chosen_account[0],
-            'username_previous': chosen_account[1],
-            'email': chosen_account[2],
-            'password': chosen_account[3],
-            'user': logged_user
-        })
-        connection.commit()
+        db.update_account(chosen_account[0], selection, Database.UPDATE_USERNAME, selected_change)
     elif selected_item.lower() == 'email':
         while True:
             subprocess.call('cls', shell=True)
@@ -197,15 +161,7 @@ What do you want to change your account email to?
             else:
                 break
 
-        cursor.execute('UPDATE accounts SET email=:email_new WHERE domain=:account_domain AND username=:username AND email=:email_previous AND password=:password AND user=:user', {
-            'email_new': selected_change,
-            'account_domain': chosen_account[0],
-            'username': chosen_account[1],
-            'email_previous': chosen_account[2],
-            'password': chosen_account[3],
-            'user': logged_user
-        })
-        connection.commit()
+        db.update_account(chosen_account[0], selection, Database.UPDATE_EMAIL, selected_change)
     elif selected_item.lower() == 'password':
         while True:
             subprocess.call('cls', shell=True)
@@ -227,17 +183,7 @@ The password will not be seen as you type
         if password_try0 == str():
             password_try0 = 'No Password'
 
-        cursor.execute('UPDATE accounts SET password=:password_new WHERE domain=:account_domain AND username=:username AND email=:email AND password=:password_previous AND user=:user', {
-            'password_new': password_try0,
-            'account_domain': chosen_account[0],
-            'username': chosen_account[1],
-            'email': chosen_account[2],
-            'password_previous': chosen_account[3],
-            'user': logged_user
-        })
-        connection.commit()
-
-        main_menu()
+        db.update_account(chosen_account[0], selection, Database.UPDATE_PASSWORD, password_try0)
 
 
 def delete_account():
@@ -246,12 +192,7 @@ def delete_account():
     print(f'What is the account domain you want to delete?')
     searched_account = input()
 
-    cursor.execute("SELECT * FROM accounts WHERE domain=:account_domain AND user=:user", {
-        'account_domain': searched_account,
-        'user': logged_user
-    })
-    connection.commit()
-    accounts = cursor.fetchall()
+    accounts = db.fetchall()
 
     if len(accounts) == 0:
         subprocess.call('cls', shell=True)
@@ -267,9 +208,9 @@ What do you want to do?
         if selection.lower() in ('retry', 'r'):
             delete_account()
         else:
-            main_menu()
+            return
 
-    elif len(accounts) > 1:
+    elif len(accounts) >= 1:
         subprocess.call('cls', shell=True)
         while True:
             for account in enumerate(accounts):
@@ -305,23 +246,7 @@ Your account password is: {account_password}''')
                         choosen_account = account[1]
                         break
 
-            cursor.execute('DELETE FROM accounts WHERE domain=:account_domain AND username=:username AND email=:email AND password=:password AND user=:user', {
-                'account_domain': choosen_account[0],
-                'username': choosen_account[1],
-                'email': choosen_account[2],
-                'password': choosen_account[3],
-                'user': logged_user
-            })
-            connection.commit()
-
-            main_menu()
-
-    elif len(accounts) == 1:
-        cursor.execute('DELETE FROM accounts WHERE domain=:account_domain AND user=:user', {
-            'account_domain': searched_account,
-            'user': logged_user
-        })
-        connection.commit()
+            db.delete_account(choosen_account[0], selection)
 
 
 def look_in_accounts():
@@ -330,15 +255,10 @@ def look_in_accounts():
     print('What is the Account Domain you are looking for?')
     account_domain = input()
 
-    cursor.execute('SELECT * FROM accounts WHERE domain=:account_domain AND user=:user', {
-        'account_domain': account_domain,
-        'user': logged_user
-    })
-    connection.commit()
-    accounts = cursor.fetchall()
+    accounts = db.fetchall()
 
     subprocess.call('cls', shell=True)
-    if len(accounts) > 1:
+    if len(accounts) >= 1:
         while True:
             for account in enumerate(accounts):
                 account_password = len(account[1][3]) * '*' if account[1][3] != 'No Password' else 'No Password'
@@ -367,18 +287,18 @@ Your account password is: {account_password}''')
                 system('pause >nul 2>&1')
                 subprocess.call('cls', shell=True)
                 continue
-            elif 0 <= account_selected <= (len(accounts) - 1):
+            else:
                 for account in enumerate(accounts):
                     if account[0] == account_selected:
-                        choosen_account = account[1]
+                        chosen_account = account[1]
                         break
             break
 
-        if choosen_account[3] == 'No Password':
+        if chosen_account[3] == 'No Password':
             subprocess.call('cls', shell=True)
-            print(f'The {choosen_account[0]} account doesn\'t have a password!')
+            print(f'The {chosen_account[0]} account does not have a password!')
             system('pause >nul 2>&1')
-            main_menu()
+            return
 
         subprocess.call('cls', shell=True)
         print('Do you want me to copy your account password to your clipboard?')
@@ -386,43 +306,14 @@ Your account password is: {account_password}''')
 
         if password_selection.lower() in ('no', 'n'):
             subprocess.call('cls', shell=True)
-            print(f'Your account password is: {choosen_account[3]}')
+            print(f'Your account password is: {chosen_account[3]}')
             system('pause >nul 2>&1')
 
         else:
             subprocess.call('cls', shell=True)
-            pyperclip.copy(choosen_account[3])
+            pyperclip.copy(chosen_account[3])
             print('Your account password has been copied to your clipboard')
             system('pause >nul 2>&1')
-
-    elif len(accounts) == 1:
-        account_password = len(accounts[0][3]) * '*' if accounts[0][3] != 'No Password' else 'No Password'
-
-        subprocess.call('cls', shell=True)
-        print(f'''
-Your account domain is: {accounts[0][0]}
-Your username is: {accounts[0][1]}
-Your account email is: {accounts[0][2]}
-Your account password is: {account_password}''')
-        system('pause >nul 2>&1')
-
-        if account_password == 'No Password':
-            main_menu()
-
-        subprocess.call('cls', shell=True)
-        print('Do you want me to copy your account password to your clipboard?')
-        copy_selection = input()
-
-        if copy_selection.lower() in ('no', 'n'):
-            subprocess.call('cls', shell=True)
-            print(f'Your account password is: {accounts[0][3]}')
-            system('pause >nul 2>&1')
-
-        subprocess.call('cls', shell=True)
-        pyperclip.copy(accounts[0][3])
-        print('Your account password has been copied to your clipboard')
-        system('pause >nul 2>&1')
-
     else:
         subprocess.call('cls', shell=True)
         print(f'''
@@ -437,7 +328,7 @@ What do you want to do?
         if selection.lower() in ('retry', 'r'):
             look_in_accounts()
         else:
-            main_menu()
+            return
 
 
 def file_enc_and_dec():
@@ -585,7 +476,7 @@ def on_exit():
 
 if __name__ == '__main__':
 
-    db = Database()
+    db = Database.Database()
 
     while True:
         subprocess.call('cls', shell=True)
