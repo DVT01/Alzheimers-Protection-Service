@@ -1,5 +1,4 @@
 *.csv
-Ideas.txt
 __pycache__
 .idea
-logs.log
+accounts.db
