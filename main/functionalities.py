@@ -150,7 +150,6 @@ Your account password password is: {account_password}
         selected_item = input()
 
         chosen_account = accounts.pop(0)
-
     elif len(accounts) > 1:
         while True:
             for account in enumerate(accounts):
@@ -348,7 +347,7 @@ What do you want to do?
                 account_password = len(account[1][3]) * '*' if account[1][3] != 'No Password' else 'No Password'
 
                 print(f'''
-                account[0]
+                {account[0]}
 Your account domain is: {account[1][0]}
 Your username is: {account[1][1]}
 Your account email is: {account[1][2]}
