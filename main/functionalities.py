@@ -1,13 +1,12 @@
 from pyAesCrypt import decryptFile, encryptFile
+from main.Database import Database
 from getpass import getpass
 from pathlib import Path
 from os import system
 import subprocess
 import pyperclip
 import hashlib
-import sqlite3
 import atexit
-import main
 import sys
 import re
 
@@ -19,24 +18,6 @@ actions = {
     'file': 'file_enc_and_dec()',
     'see all': 'see_all()'
 }
-
-
-def on_startup(user='Guest', user_password=None):
-
-    global cursor, connection, logged_user, db_table_name, logged_user_password
-
-    logged_user = user
-    logged_user_password = user_password
-    db_table_name = f'{logged_user}_accounts'
-    database = Path('testing.db')
-
-    if user == 'Guest':
-        database = ':memory:'
-
-    connection = sqlite3.connect(database)
-    cursor = connection.cursor()
-    cursor.execute('CREATE TABLE IF NOT EXISTS accounts(domain TEXT, username TEXT, email TEXT, password TEXT, user TEXT)')
-    main_menu()
 
 
 def valid_email(email):
@@ -54,56 +35,20 @@ def valid_email(email):
 def add_account():
 
     subprocess.call('cls', shell=True)
-    print('Account Domain')
-    account_name = input()
+    print('Account Name')
+    name = input()
 
-    print(f'\nUsername of {account_name} account.')
-    account_username = input()
+    print(f'\nUsername of {name} account.')
+    username = input()
 
-    while True:
-        print(f'Email of {account_name} account.')
-        account_email = input()
+    email = str()
+    while not valid_email(email):
+        print(f'Email of {name} account.')
+        email = input()
 
-        if account_email == str():
-            account_email = 'No Email'
-            break
-        elif not valid_email(account_email):
-            subprocess.call('cls', shell=True)
-            print(f'{account_email} is not a valid email!')
+    password = getpass('As you type the password, it will not be seen:')
 
-            print('Do you want to leave it as None?')
-            answer = input()
-
-            if answer.lower() in ('no', 'n'):
-                continue
-            else:
-                account_email = 'No Email'
-                break
-        else:
-            break
-
-    while True:
-        print(f'\nThe password of {account_name} account.')
-        account_password0 = getpass('As you type the password, it will not be seen:')
-        account_password1 = getpass('\nPlease re-type password:')
-
-        if account_password0 != account_password1:
-            subprocess.call('cls', shell=True)
-            print('The passwords do not match!\nPlease re-type them again.')
-            continue
-
-        if account_password0 == str():
-            account_password0 = 'No Password'
-            break
-
-    cursor.execute('INSERT INTO accounts(domain, username, email, password, user) VALUES (:domain, :username, :email, :password, :user)', {
-        'domain': account_name,
-        'username': account_username,
-        'email': account_email,
-        'password': account_password0,
-        'user': logged_user
-    })
-    connection.commit()
+    db.add_account(name, username, email, password)
 
 
 def update_account():
@@ -614,37 +559,12 @@ def file_enc_and_dec():
 
 
 def see_all():
-    tries = 1
-    while True:
-        if logged_user_password is None:
-            break
-        subprocess.call('cls', shell=True)
-        print(f'''Please type the password for the {logged_user} RSIH APS account.\t\t\t\t\t\t\t\t\t\t\t\t Try {tries} of 2
-(As you type the password won't be visible)''')
-        password = hashlib.sha512(getpass('').encode('UTF-8')).hexdigest()
-
-        if password != logged_user_password:
-            if tries == 2:
-                sys.exit()
-            subprocess.call('cls', shell=True)
-            print('''Incorrect Password!
-Please try again.''')
-            system('pause >nul 2>&1')
-            tries += 1
-            continue
-        break
-
-    cursor.execute('SELECT * FROM accounts WHERE user=:user', {
-        'user': logged_user
-    })
-    connection.commit()
-    accounts = cursor.fetchall()
+    accounts = db.fetchall()
 
     if accounts == list():
         subprocess.call('cls', shell=True)
         print('There are no accounts saved yet!')
         system('pause >nul 2>&1')
-        main_menu()
 
     subprocess.call('cls', shell=True)
     for account in accounts:
@@ -656,39 +576,32 @@ This account email is: {account[2]}
 This account password is: {account_password}
 ''')
     system('pause >nul 2>&1')
-    main_menu()
 
 
 @atexit.register
 def on_exit():
-    try:
-        cursor.close()
-        connection.close()
-    except NameError as error:
-        print('Run the main.py file instead of this please!')
-        system('pause >nul 2>&1')
+    db.close()
 
 
-def main_menu():
+if __name__ == '__main__':
+
+    db = Database()
+
     while True:
-
         subprocess.call('cls', shell=True)
-        print(f'\tMain Menu\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tLogged in as {logged_user}.')
-        print('''What do you want to do?
--Add (Add an account)
--Remove (Delete an account)
--Edit (Modify an account)
--See (See an accounts details)
--File (Encrypt or Decrypt files)
--Delete User (Deletes a user)
--Exit
-''')
+        print('\tMain Menu')
+        print('What do you want to do?')
+        print('-Add (Add an account)')
+        print('-Remove (Delete an account)')
+        print('-Edit (Modify an account)')
+        print('-See (See an accounts details)')
+        print('-File (Encrypt or Decrypt files)')
+        print('-Delete User (Deletes a user)')
+        print('-Exit')
         action = input()
 
         if action == '':
             continue
-        elif action.lower() == 'delete user' and logged_user != 'Guest':
-            main.remove(logged_user, logged_user_password)
         elif action.lower() in actions:
             eval(actions[action.lower()])
         elif action.lower() == 'exit':
@@ -699,7 +612,3 @@ def main_menu():
             print(f"Valid inputs are: add, remove, edit, see, file and exit")
             system('pause >nul 2>&1')
             continue
-
-
-if __name__ == '__main__':
-    sys.exit()
