@@ -1,5 +1,5 @@
 from pyAesCrypt import decryptFile, encryptFile
-import main.Database as Database
+import Database as Database
 from getpass import getpass
 from pathlib import Path
 from os import system
