@@ -4,7 +4,6 @@ from pathlib import Path
 from os import system
 import subprocess
 import pyperclip
-import logging
 import hashlib
 import sqlite3
 import atexit
@@ -21,18 +20,7 @@ actions = {
     'see all': 'see_all()'
 }
 
-logfile = Path('logs.log')
-logging.basicConfig(filename=logfile, level=logging.INFO, format='%(asctime)s:%(message)s')
 
-
-def outer_record(original_function):
-    def inner_record(*args, **kwargs):
-        logging.info(f'{original_function.__name__} ran with: {args}, {kwargs} arguments, from {__file__}.')
-        return original_function(*args, **kwargs)
-    return inner_record
-
-
-@outer_record
 def on_startup(user='Guest', user_password=None):
 
     global cursor, connection, logged_user, db_table_name, logged_user_password
@@ -51,7 +39,6 @@ def on_startup(user='Guest', user_password=None):
     main_menu()
 
 
-@outer_record
 def valid_email(email):
     valid_email_regex = re.compile(r'''
     [a-zA-Z0-9._%+-]+      # username
@@ -64,7 +51,6 @@ def valid_email(email):
     return True
 
 
-@outer_record
 def add_account():
 
     subprocess.call('cls', shell=True)
@@ -120,7 +106,6 @@ def add_account():
     connection.commit()
 
 
-@outer_record
 def update_account():
 
     subprocess.call('cls', shell=True)
@@ -310,7 +295,6 @@ The password will not be seen as you type
         main_menu()
 
 
-@outer_record
 def delete_account():
 
     subprocess.call('cls', shell=True)
@@ -395,7 +379,6 @@ Your account password is: {account_password}''')
         connection.commit()
 
 
-@outer_record
 def look_in_accounts():
 
     subprocess.call('cls', shell=True)
@@ -512,7 +495,6 @@ What do you want to do?
             main_menu()
 
 
-@outer_record
 def file_enc_and_dec():
 
     buffer_size = 64
@@ -631,7 +613,6 @@ def file_enc_and_dec():
         file_enc_and_dec()
 
 
-@outer_record
 def see_all():
     tries = 1
     while True:
@@ -679,7 +660,6 @@ This account password is: {account_password}
 
 
 @atexit.register
-@outer_record
 def on_exit():
     try:
         cursor.close()
@@ -689,7 +669,6 @@ def on_exit():
         system('pause >nul 2>&1')
 
 
-@outer_record
 def main_menu():
     while True:
 

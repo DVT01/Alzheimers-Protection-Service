@@ -119,3 +119,7 @@ class Database:
                 })
 
         self.connection.commit()
+
+    def close(self):
+        self.cursor.close()
+        self.connection.close()
