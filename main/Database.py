@@ -1,10 +1,14 @@
-import sqlite3
+from Account import Account
 from pathlib import Path
+from enum import Enum
+import sqlite3
 
-UPDATE_NAME = 'name'
-UPDATE_USERNAME = 'username'
-UPDATE_EMAIL = 'email'
-UPDATE_PASSWORD = 'password'
+
+class Update(Enum):
+    NAME = 1
+    USERNAME = 2
+    EMAIL = 3
+    PASSWORD = 4
 
 
 class Database:
@@ -39,15 +43,15 @@ class Database:
         else:
             raise ZeroDivisionError
 
-    def add_account(self, name, username, email, password):
+    def add_account(self, account: Account):
         self.cursor.execute(
             '''INSERT INTO accounts(name, username, email, password)
             VALUES (:name, :username, :email, :password)''',
             {
-                'name': name,
-                'username': username,
-                'email': email,
-                'password': password
+                'name': account.name,
+                'username': account.username,
+                'email': account.email,
+                'password': account.password
             })
         self.connection.commit()
 
@@ -69,7 +73,7 @@ class Database:
     def update_account(self, name, row_index, item, change):
         chosen_account = self.get_row_from_index(name, row_index)
 
-        if item == UPDATE_NAME:
+        if item == Update.NAME:
             self.cursor.execute(
                 '''UPDATE accounts SET name=:new_name
                 WHERE name=:name AND username=:username
@@ -81,7 +85,7 @@ class Database:
                     'email': chosen_account[2],
                     'password': chosen_account[3]
                 })
-        elif item == UPDATE_USERNAME:
+        elif item == Update.USERNAME:
             self.cursor.execute(
                 '''UPDATE accounts SET username=:new_username
                 WHERE name=:name AND username=:username
@@ -93,7 +97,7 @@ class Database:
                     'email': chosen_account[2],
                     'password': chosen_account[3],
                 })
-        elif item == UPDATE_EMAIL:
+        elif item == Update.EMAIL:
             self.cursor.execute(
                 '''UPDATE accounts SET email=:new_email
                 WHERE name=:name AND username=:username
@@ -105,7 +109,7 @@ class Database:
                     'email': chosen_account[2],
                     'password': chosen_account[3],
                 })
-        elif item == UPDATE_PASSWORD:
+        elif item == Update.PASSWORD:
             self.cursor.execute(
                 '''UPDATE accounts SET password=:new_password
                 WHERE name=:name AND username=:username

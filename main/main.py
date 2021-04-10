@@ -1,10 +1,11 @@
 from pyAesCrypt import decryptFile, encryptFile
-import Extensions.Database as Database
 from getpass import getpass
+from Account import Account
 from pathlib import Path
 from os import system
 import subprocess
 import pyperclip
+import Database
 import hashlib
 import atexit
 import sys
@@ -35,20 +36,18 @@ def valid_email(email):
 def add_account():
 
     subprocess.call('cls', shell=True)
-    print('Account Name')
-    name = input()
+    name = input('Account Name\n')
 
-    print(f'\nUsername of {name} account.')
-    username = input()
+    username = input(f'\nUsername of {name} account.\n')
 
     email = str()
     while not valid_email(email):
-        print(f'Email of {name} account.')
-        email = input()
+        email = input(f'\nEmail of {name} account.\n')
 
-    password = getpass('As you type the password, it will not be seen:')
+    password = getpass('\nAs you type the password, it will not be seen:')
 
-    db.add_account(name, username, email, password)
+    account = Account(name, username, email, password)
+    db.add_account(account)
 
 
 def update_account():
