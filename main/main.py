@@ -1,12 +1,11 @@
 from pyAesCrypt import decryptFile, encryptFile
+from Database import Database, Update
 from getpass import getpass
 from Account import Account
 from pathlib import Path
 from os import system
 import subprocess
 import pyperclip
-import Database
-import hashlib
 import atexit
 import sys
 import re
@@ -125,12 +124,12 @@ What do you want to do?
         subprocess.call('cls', shell=True)
         print("\nWhat do you want to change the account name to?")
         selected_change = input()
-        db.update_account(chosen_account[0], selection, Database.Update.NAME, selected_change)
+        db.update_account(chosen_account[0], selection, Update.NAME, selected_change)
     elif selected_item.lower() == 'username':
         subprocess.call('cls', shell=True)
         print('\nWhat do you want to change your username to?')
         selected_change = input()
-        db.update_account(chosen_account[0], selection, Database.Update.USERNAME, selected_change)
+        db.update_account(chosen_account[0], selection, Update.USERNAME, selected_change)
     elif selected_item.lower() == 'email':
         while True:
             subprocess.call('cls', shell=True)
@@ -160,7 +159,7 @@ What do you want to change your account email to?
             else:
                 break
 
-        db.update_account(chosen_account[0], selection, Database.Update.EMAIL, selected_change)
+        db.update_account(chosen_account[0], selection, Update.EMAIL, selected_change)
     elif selected_item.lower() == 'password':
         while True:
             subprocess.call('cls', shell=True)
@@ -182,7 +181,7 @@ The password will not be seen as you type
         if password_try0 == str():
             password_try0 = 'No Password'
 
-        db.update_account(chosen_account[0], selection, Database.Update.PASSWORD, password_try0)
+        db.update_account(chosen_account[0], selection, Update.PASSWORD, password_try0)
 
 
 def delete_account():
@@ -475,7 +474,7 @@ def on_exit():
 
 if __name__ == '__main__':
 
-    db = Database.Database()
+    db = Database()
 
     while True:
         subprocess.call('cls', shell=True)
